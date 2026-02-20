@@ -87,8 +87,25 @@ router.put('/:id', auth, async (req, res) => {
     if (!expense) {
       return res.status(404).json({ message: 'Expense not found' });
     }
+
     if (expense.userId.toString() !== req.userId) {
       return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    if (!description || typeof description !== 'string' || description.trim() === '') {
+      return res.status(400).json({ message: 'Description is required and must be a non-empty string' });
+    }
+
+    if (amount === undefined || typeof amount !== 'number' || amount <= 0) {
+      return res.status(400).json({ message: 'Amount is required and must be a positive number' });
+    }
+
+    if (!category || typeof category !== 'string' || category.trim() === '') {
+      return res.status(400).json({ message: 'Category is required and must be a non-empty string' });
+    }
+
+    if (date && isNaN(new Date(date).getTime())) {
+      return res.status(400).json({ message: 'Date must be a valid date' });
     }
 
     Object.assign(expense, req.body);
