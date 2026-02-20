@@ -123,6 +123,12 @@ router.put('/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
+    if (req.body.limit !== undefined) {
+      if (typeof req.body.limit !== 'number' || req.body.limit <= 0) {
+        return res.status(400).json({ message: 'Limit must be a positive number' });
+      }
+    }
+
     Object.assign(budget, req.body);
     await budget.save();
     res.json(budget);
