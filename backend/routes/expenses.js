@@ -49,8 +49,20 @@ router.post('/', auth, async (req, res) => {
   try {
     const { description, amount, category, date } = req.body;
 
-    if (!description || !amount || !category) {
-      return res.status(400).json({ message: 'Please fill all required fields' });
+    if (!description || typeof description !== 'string' || description.trim() === '') {
+      return res.status(400).json({ message: 'Description is required and must be a non-empty string' });
+    }
+
+    if (amount === undefined || typeof amount !== 'number' || amount <= 0) {
+      return res.status(400).json({ message: 'Amount is required and must be a positive number' });
+    }
+
+    if (!category || typeof category !== 'string' || category.trim() === '') {
+      return res.status(400).json({ message: 'Category is required and must be a non-empty string' });
+    }
+
+    if (date && isNaN(new Date(date).getTime())) {
+      return res.status(400).json({ message: 'Date must be a valid date' });
     }
 
     const expense = new Expense({
