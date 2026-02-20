@@ -30,7 +30,7 @@ router.get('/', auth, async (req, res) => {
 // Get budget with spent amount
 router.get('/:id/status', auth, async (req, res) => {
   try {
-    const budget = await Budget.findById(req.params.id);
+    const budget = await Budget.findOne({ _id: req.params.id, userId: req.userId });
     if (!budget) {
       return res.status(404).json({ message: 'Budget not found' });
     }
