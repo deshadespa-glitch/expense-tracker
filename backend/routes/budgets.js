@@ -71,6 +71,18 @@ router.post('/', auth, async (req, res) => {
       return res.status(400).json({ message: 'Please fill all required fields' });
     }
 
+    if (typeof category !== 'string' || category.trim() === '') {
+      return res.status(400).json({ message: 'Category must be a non-empty string' });
+    }
+
+    if (typeof limit !== 'number' || limit <= 0) {
+      return res.status(400).json({ message: 'Limit must be a positive number' });
+    }
+
+    if (!/^\d{4}-\d{2}$/.test(month)) {
+      return res.status(400).json({ message: 'Month must be in YYYY-MM format' });
+    }
+
     const existingBudget = await Budget.findOne({
       userId: req.userId,
       category,
